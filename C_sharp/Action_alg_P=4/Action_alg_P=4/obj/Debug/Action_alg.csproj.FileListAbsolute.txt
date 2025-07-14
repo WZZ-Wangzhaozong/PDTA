@@ -1,0 +1,9 @@
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\obj\Debug\Action_alg.csproj.CoreCompileInputs.cache
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\bin\Debug\Action_alg.exe.config
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\bin\Debug\Action_alg.exe
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\bin\Debug\Action_alg.pdb
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\obj\Debug\Action_alg.exe
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\obj\Debug\Action_alg.pdb
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\bin\Debug\Newtonsoft.Json.dll
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\bin\Debug\Newtonsoft.Json.xml
+C:\Users\王照宗\source\repos\Action_alg\Action_alg\obj\Debug\Action_alg.csproj.CopyComplete

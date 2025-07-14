@@ -1,0 +1,10 @@
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\bin\Debug\Action_alg_P=8.exe.config
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\bin\Debug\Action_alg_P=8.exe
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\bin\Debug\Action_alg_P=8.pdb
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\bin\Debug\Newtonsoft.Json.dll
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\bin\Debug\Newtonsoft.Json.xml
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\obj\Debug\Action_alg_P=8.csproj.CoreCompileInputs.cache
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\obj\Debug\Action_alg_P=8.csproj.CopyComplete
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\obj\Debug\Action_alg_P=8.exe
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\obj\Debug\Action_alg_P=8.pdb
+C:\Users\王照宗\source\repos\Action_alg_P=8\Action_alg_P=8\obj\Debug\Action_alg_P=8.csproj.AssemblyReference.cache
