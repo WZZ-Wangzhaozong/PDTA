@@ -6,9 +6,9 @@ import json
 import sys
 import os
 
-def forward_equations(t, x, KE, KR, PNi, Bij, exp, beta, end_symbol):
+def forward_equations(t, x, KE, KR, PNi, Bij, alpha, beta, end_symbol):
     '''
-    :param t, x, KE, KR, PNi, Bij, exp, beta: input
+    :param t, x, KE, KR, PNi, Bij, alpha, beta: input
     :return: current change state trends of opponents, used for predicting the future state through integration (during adversarial process)
     '''
     x = torch.Tensor(x).clone()
@@ -18,21 +18,24 @@ def forward_equations(t, x, KE, KR, PNi, Bij, exp, beta, end_symbol):
         x[i] = max(0, x[i])
     x_nonnegative = torch.max(x, torch.zeros_like(x))
 
+    # Transfer ability
     dxdt1 = torch.zeros_like(x)
     for i in range(dim):
         for j in range(dim):
             term = torch.sign(x_nonnegative[j] / PNi[j] - x_nonnegative[i] / PNi[i]) * \
-                   (exp ** torch.abs(x_nonnegative[j] / PNi[j] - x_nonnegative[i] / PNi[i]) - 1) / \
+                   (alpha ** torch.abs(x_nonnegative[j] / PNi[j] - x_nonnegative[i] / PNi[i]) - 1) / \
                    Bij[i, j]
             dxdt1[i] += term
     dxdt1 *= KE
 
+    # Recovery ability
     dxdt2 = (beta[0] + beta[1] * x_nonnegative + beta[2] * (x_nonnegative ** 2)) * KR
+
     return dxdt1 + dxdt2
 
-def backward_equations(x, KE, KR, PNi, Bij, exp, beta):
+def backward_equations(x, KE, KR, PNi, Bij, alpha, beta):
     '''
-    :param x, KE, KR, PNi, Bij, exp, beta: input
+    :param x, KE, KR, PNi, Bij, alpha, beta: input
     :return: current change state trends of opponents, used for saving data (after adversarial process)
     '''
     dim = x.shape[0]-1
@@ -42,23 +45,17 @@ def backward_equations(x, KE, KR, PNi, Bij, exp, beta):
     dxdt2[0] = x[0]
     x = x[1:]
 
+    # Transfer ability
     for i in range(dim):
         for j in range(dim):
             dxdt1[i * dim + j + 1] = np.sign(x[j] / PNi[j] - x[i] / PNi[i]) * (
-                        exp ** abs(x[j] / PNi[j] - x[i] / PNi[i]) - 1) / Bij[i, j]
+                        alpha ** abs(x[j] / PNi[j] - x[i] / PNi[i]) - 1) / Bij[i, j]
     dxdt1[1:] *= KE
 
+    # Recovery ability
     dxdt2[1:] = (beta[0] + x * beta[1] + x ** 2 * beta[2]) * KR
+
     return dxdt1, dxdt2
-
-def Process(args, len, x0):
-    if(len==0.0):
-        return np.array([0.0]), x0.reshape(1, -1)
-    t_span = [0, len]
-    t_eval = np.linspace(t_span[0], t_span[1], max(100, int(len*100)+1))   # 评估时间点
-
-    sol = solve_ivp(forward_equations, t_span, x0, t_eval=t_eval, args=args)
-    return sol.t, sol.y.T
 
 def task_symbol(P, Time, Win_len, tol=0.05):
     task_pending = np.array([[i+1, Time[i] * 2, Time[i], 0.0] for i in range(P)]).T
@@ -131,6 +128,24 @@ def task_symbol_Csharp(param, unexcuted, tobe_confirmed, Searchwolf_num, P):
     return torch.stack(action_list, dim=0)
 
 def Env_recursion(cur_time, act_time, act_seq, KO, anti_abilities, opponent_his_data, args):
+    '''
+    :param cur_time, act_time, act_seq, KO, anti_abilities, opponent_his_data, args: input
+    :return: anti-capabilities of opponents at act_time, anti-capability trajectories of opponents before act_time
+    '''
+
+    def Process(args, len, x0):
+        '''
+        :param args, len, x0: input
+        :return: anti-capability trajectories of opponents during [current_time, current_time+len]
+        '''
+        if (len == 0.0):
+            return np.array([0.0]), x0.reshape(1, -1)
+        t_span = [0, len]
+        t_eval = np.linspace(t_span[0], t_span[1], max(100, int(len * 100) + 1))  # 评估时间点
+
+        sol = solve_ivp(forward_equations, t_span, x0, t_eval=t_eval, args=args)
+        return sol.t, sol.y.T
+
     # if act_seq is not empty
     act_seq = act_seq[:, np.argsort(act_seq[2, :])]  # Sort action sequence according to arrival time
     while (act_seq.shape[1] != 0):

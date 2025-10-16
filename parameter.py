@@ -19,19 +19,19 @@ opponents = all_sheets["opponents"].to_numpy()
 base = all_sheets["base"].to_numpy()[0]
 
 '''Settings of both sides'''
-x0 = torch.Tensor([2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0])  # Initial anti-capabilities of opponents
 end_symbol = 0.05  # Symbol of the end of the adversarial process
 C = 0.024  # Weakening ability of single agent
 Agent_number = 50  # Agents' number
-KO = Agent_number * C
-KE = 0.16  # Transfer ability factor
-exp = 3.0  # Transfer index factor
-KR = 0.012  # Recovery ability factor
-beta = np.array([1.0, 0.6, 1.1])  # Recovery index factor
-order = 3  # Number of elements in beta
+KO = Agent_number * C  # Total weakening ability of the allies' side
+
+# The beginning time of each phase
+Duration = 1.0  # Duration allowed for the opponent's adjustment
+# For example: from 8.0-8.0+duration, the opponents are connected for adjusting deployment
+Adv_time = [0.0, 8.0, 8.0+Duration, 15.0, 15.0+Duration, 20.0, 20.0+Duration]
 
 # Opponents' number in each phase
 P = [8, 8, 8, 8, 8, 6, 6]
+x0 = torch.ones([P[0]]) * 2.0  # Initial anti-capabilities of opponents
 # Opponent index
 opponents_index = [[0, 1, 2, 3, 4, 5, 6, 7],
                    [0, 1, 2, 3, 4, 5, 6, 7],
@@ -40,14 +40,15 @@ opponents_index = [[0, 1, 2, 3, 4, 5, 6, 7],
                    [0, 1, 2, 3, 4, 5, 6, 7],
                    [0, 1, 2, 3, 4, 5],
                    [0, 1, 2, 3, 4, 5]]
-# The beginning time of each phase
-Adv_time = [0.0, 8.0, 9.0, 15.0, 16.0, 20.0, 21.0]
+KE = 0.16  # Transfer ability factor
+exp = 3.0  # Transfer index factor
+KR = 0.012  # Recovery ability factor
+beta = np.array([1.0, 0.6, 1.1])  # Recovery index factor
+order = 3  # Number of elements in beta
 
 all_sheets = pd.read_excel(script_dir + r"\data_save\excel_file\flight_point.xlsx", sheet_name=None, header=None)["path_len"].to_numpy()
-
 # Travelling time
 Time = (all_sheets[0, :] / max(all_sheets[0, :P[0]])).tolist()
-
 # Transfer damping in each phase
 Bij = np.vstack([all_sheets[1:, :], np.zeros([max(P)])])
 Bij = (Bij + Bij.T + np.diag([1 for i in range(max(P))])) / max(all_sheets[0, :P[0]])

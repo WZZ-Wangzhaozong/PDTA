@@ -2,8 +2,6 @@ import numpy as np
 import torch
 import random
 import Env as Env
-
-
 def fitness_calculation(Positions, Wolves_action, x0, end_symbol, opponent_model, loss_type):
     location = Wolves_action[0, :, 0]
     rec_time = Wolves_action[0, :, 2]
@@ -139,7 +137,6 @@ def fitness_calculation(Positions, Wolves_action, x0, end_symbol, opponent_model
         Positions[:, -1] += torch.sum(-x0_tiled1 + x0_tiled, axis=1) * 100
     return Positions[:, -1]
 
-
 def updating_wolves(Position, Alpha_wolf, Beta_wolf, Delta_wolf, Dim, a):
     for dim in range(Dim):
         r1 = random.random()  # r1 is a random number in [0,1]
@@ -166,7 +163,6 @@ def updating_wolves(Position, Alpha_wolf, Beta_wolf, Delta_wolf, Dim, a):
 
         Position[dim] = (X1 + X2 + X3) / 3
     return Position
-
 
 def DEGWO(Dim, Searchwolf_num, Max_iter, KO_action, x0, Time, end_symbol, unexcuted,
           to_be_instantiated, model, win_len, loss_type):
